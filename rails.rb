@@ -5,7 +5,7 @@ run "if uname | grep -q 'Darwin'; then pgrep spring | xargs kill -9; fi"
 inject_into_file 'Gemfile', before: 'group :development, :test do' do
   <<~RUBY
     gem 'devise'
-
+    gem 'foreman'
     gem 'autoprefixer-rails'
     gem 'font-awesome-sass'
     gem 'simple_form'
@@ -13,12 +13,14 @@ inject_into_file 'Gemfile', before: 'group :development, :test do' do
 end
 
 inject_into_file 'Gemfile', after: 'group :development, :test do' do
-  <<-RUBY
-  gem 'rspec'
-  gem 'factory_bot_rails'
-  gem 'pry-byebug'
-  gem 'pry-rails'
-  gem 'dotenv-rails'
+  <<~RUBY
+    gem 'rspec'
+    gem 'rspec-rails', '~> 5.0.0'
+    gem 'shoulda-matchers', '~> 4.0'
+    gem 'factory_bot_rails'
+    gem 'pry-byebug'
+    gem 'pry-rails'
+    gem 'dotenv-rails'
   RUBY
 end
 
