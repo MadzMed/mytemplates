@@ -12,15 +12,15 @@ inject_into_file 'Gemfile', before: 'group :development, :test do' do
   RUBY
 end
 
-inject_into_file 'Gemfile', after: 'group :development, :test do ' do
+inject_into_file 'Gemfile', before: "# Call 'byebug' anywhere in the code to stop execution and get a debugger console" do
   <<-RUBY
-  gem 'rspec'
-  gem 'rspec-rails', '~> 5.0.0'
-  gem 'shoulda-matchers', '~> 4.0'
-  gem 'factory_bot_rails'
-  gem 'pry-byebug'
-  gem 'pry-rails'
-  gem 'dotenv-rails'
+    gem 'rspec'
+    gem 'rspec-rails', '~> 5.0.0'
+    gem 'shoulda-matchers', '~> 4.0'
+    gem 'factory_bot_rails'
+    gem 'pry-byebug'
+    gem 'pry-rails'
+    gem 'dotenv-rails'
   RUBY
 end
 
