@@ -13,14 +13,14 @@ inject_into_file 'Gemfile', before: 'group :development, :test do' do
 end
 
 inject_into_file 'Gemfile', after: 'group :development, :test do' do
-  <<~RUBY
-    '/n'gem 'rspec'
-    gem 'rspec-rails', '~> 5.0.0'
-    gem 'shoulda-matchers', '~> 4.0'
-    gem 'factory_bot_rails'
-    gem 'pry-byebug'
-    gem 'pry-rails'
-    gem 'dotenv-rails'
+  <<-RUBY
+  gem 'rspec'
+  gem 'rspec-rails', '~> 5.0.0'
+  gem 'shoulda-matchers', '~> 4.0'
+  gem 'factory_bot_rails'
+  gem 'pry-byebug'
+  gem 'pry-rails'
+  gem 'dotenv-rails'
   RUBY
 end
 
