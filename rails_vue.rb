@@ -140,6 +140,32 @@ after_bundle do
   ########################################
   generate('rspec:install')
 
+  # Config Rspec
+  ########################################
+  ######## FactoryBot helpers and Devise for Integrations test
+  ########################################
+
+  inject_into_file 'spec/rails_helper.rb', after: '# config.use_active_record = false' do <<~RUBY
+    config.include FactoryBot::Syntax::Methods
+    config.include Devise::Test::IntegrationHelpers, type: :request
+    config.include Warden::Test::Helpers
+
+    config.expect_with :rspec do |c|
+      c.syntax = :expect
+    end
+  RUBY
+
+  ######## Shoulda Helpers for rspec
+  #######################################
+  append_file 'spec/rails_helper.rb', <<~RUBY
+    Shoulda::Matchers.configure do |config|
+      config.integrate do |with|
+        with.test_framework :rspec
+        with.library :rails
+      end
+    end
+  RUBY
+
   # App controller
   ########################################
   run 'rm app/controllers/application_controller.rb'
@@ -209,6 +235,28 @@ after_bundle do
       );
     JS
   end
+
+  run 'rm app/javascript/packs/hello_world.js'
+  run 'touch app/javascript/packs/hello_world.js'
+  append_file 'app/javascript/packs/hello_world.js', <<~JS
+    import TurbolinksAdapter from 'vue-turbolinks';
+    import Vue from 'vue/dist/vue.esm'
+    import App from '../app.vue'
+
+    Vue.use(TurbolinksAdapter);
+
+    document.addEventListener('turbolinks:load', () => {
+      const app = new Vue({
+        el: '#hello',
+        data: () => {
+          return {
+            message: "Can you say hello?"
+          }
+        },
+        components: { App }
+      })
+    });
+  JS
 
   # Dotenv
   ########################################
