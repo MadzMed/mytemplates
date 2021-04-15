@@ -114,8 +114,8 @@ after_bundle do
   # Generators: db + simple form + pages controller
   ########################################
   rails_command 'db:drop db:create db:migrate'
-  generate('simple_form:install', '--bootstrap')
   generate(:controller, 'pages', 'home', '--skip-routes', '--no-test-framework')
+  generate('simple_form:install', '--bootstrap')
 
   # Routes
   ########################################
