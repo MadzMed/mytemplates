@@ -13,7 +13,7 @@ inject_into_file 'Gemfile', before: 'group :development, :test do' do
 end
 
 inject_into_file 'Gemfile', before: "# Call 'byebug' anywhere in the code to stop execution and get a debugger console" do
-  <<-RUBY
+  <<~RUBY
     gem 'rspec'
     gem 'rspec-rails', '~> 5.0.0'
     gem 'shoulda-matchers', '~> 4.0'
@@ -51,8 +51,8 @@ gsub_file('app/views/layouts/application.html.erb', "<%= javascript_pack_tag 'ap
 
 style = <<~HTML
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-HTML
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+ HTML
 gsub_file('app/views/layouts/application.html.erb', "<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>", style)
 
 # Flashes
@@ -112,7 +112,7 @@ after_bundle do
   # Generators: db + simple form + pages controller
   ########################################
   rails_command 'db:drop db:create db:migrate'
-  # generate('simple_form:install', '--bootstrap')
+  generate('simple_form:install', '--bootstrap')
   generate(:controller, 'pages', 'home', '--skip-routes', '--no-test-framework')
 
   # Routes
