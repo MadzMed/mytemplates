@@ -100,6 +100,8 @@ generators = <<~RUBY
     generate.assets false
     generate.helper false
     generate.test_framework :test_unit, fixture: false
+    generate.factory_bot dir: 'spec/factories/'
+    generate.factory_bot suffix: "factory"
   end
 RUBY
 
@@ -112,7 +114,7 @@ after_bundle do
   # Generators: db + simple form + pages controller
   ########################################
   rails_command 'db:drop db:create db:migrate'
-  # generate('simple_form:install', '--bootstrap')
+  generate('simple_form:install', '--bootstrap')
   generate(:controller, 'pages', 'home', '--skip-routes', '--no-test-framework')
 
   # Routes
@@ -133,7 +135,6 @@ after_bundle do
   ########################################
   generate('devise:install')
   generate('devise', 'User')
-
 
   # Rspec Install
   ########################################
@@ -172,7 +173,7 @@ after_bundle do
 
   # Webpacker / Yarn
   ########################################
-  run 'yarn add popper.js jquery bootstrap vue-turbolink'
+  run 'yarn add popper.js jquery bootstrap vue-turbolinks'
   append_file 'app/javascript/packs/application.js', <<~JS
 
 
@@ -212,6 +213,12 @@ after_bundle do
   # Dotenv
   ########################################
   run 'touch .env'
+
+  # Procfile
+  ########################################
+  run "touch Procfile"
+  append_file 'Procfile', "back: bin/rails server --port 3000
+front: bin/webpack-dev-server"
 
   # Rubocop
   ########################################
