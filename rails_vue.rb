@@ -99,7 +99,7 @@ generators = <<~RUBY
   config.generators do |generate|
     generate.assets false
     generate.helper false
-    generate.test_framework :test_unit, fixture: false
+    generate.test_framework :rspec, fixture: false
     generate.factory_bot dir: 'spec/factories/'
     generate.factory_bot suffix: "factory"
   end
@@ -115,6 +115,19 @@ after_bundle do
   ########################################
   rails_command 'db:drop db:create db:migrate'
   generate(:controller, 'pages', 'home', '--skip-routes', '--no-test-framework')
+
+  run 'rm app/views/pages/home.html.erb'
+  run 'touch app/views/pages/home.html.erb'
+  append_file 'app/views/pages/home.html.erb', <<~HTML
+    <%= javascript_pack_tag 'hello_vue.js' %>
+
+    <div id="hello">
+      {{message}}
+      <App></App>
+      }
+    </div>
+  HTML
+
   generate('simple_form:install', '--bootstrap')
 
   # Routes
@@ -146,14 +159,15 @@ after_bundle do
   ########################################
 
   inject_into_file 'spec/rails_helper.rb', after: '# config.use_active_record = false' do <<~RUBY
-    config.include FactoryBot::Syntax::Methods
-    config.include Devise::Test::IntegrationHelpers, type: :request
-    config.include Warden::Test::Helpers
+      config.include FactoryBot::Syntax::Methods
+      config.include Devise::Test::IntegrationHelpers, type: :request
+      config.include Warden::Test::Helpers
 
-    config.expect_with :rspec do |c|
-      c.syntax = :expect
-    end
-  RUBY
+      config.expect_with :rspec do |c|
+        c.syntax = :expect
+      end
+    RUBY
+  end
 
   ######## Shoulda Helpers for rspec
   #######################################
@@ -265,8 +279,7 @@ after_bundle do
   # Procfile
   ########################################
   run "touch Procfile"
-  append_file 'Procfile', "back: bin/rails server --port 3000
-front: bin/webpack-dev-server"
+  append_file 'Procfile', "back: bin/rails server --port 3000\nfront: bin/webpack-dev-server"
 
   # Rubocop
   ########################################
