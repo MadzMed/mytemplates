@@ -42,7 +42,7 @@ gsub_file('config/environments/development.rb', /config\.assets\.debug.*/, 'conf
 if Rails.version < "6"
   scripts = <<~HTML
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
-        <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   HTML
   gsub_file('app/views/layouts/application.html.erb', "<%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>", scripts)
 end
@@ -158,7 +158,8 @@ after_bundle do
   ######## FactoryBot helpers and Devise for Integrations test
   ########################################
 
-  inject_into_file 'spec/rails_helper.rb', after: '# config.use_active_record = false' do <<~RUBY
+  inject_into_file 'spec/rails_helper.rb', after: '# config.use_active_record = false' do
+    <<~RUBY
       config.include FactoryBot::Syntax::Methods
       config.include Devise::Test::IntegrationHelpers, type: :request
       config.include Warden::Test::Helpers
@@ -185,7 +186,7 @@ after_bundle do
   run 'rm app/controllers/application_controller.rb'
   file 'app/controllers/application_controller.rb', <<~RUBY
     class ApplicationController < ActionController::Base
-    #{  "protect_from_forgery with: :exception\n" if Rails.version < "5.2"}  before_action :authenticate_user!
+    #{"protect_from_forgery with: :exception\n" if Rails.version < "5.2"}  before_action :authenticate_user!
     end
   RUBY
 
