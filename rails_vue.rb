@@ -251,7 +251,7 @@ after_bundle do
     JS
   end
 
-  run 'rm app/javascript/packs/hello_world.js'
+  # run 'rm app/javascript/packs/hello_world.js'
   run 'touch app/javascript/packs/hello_world.js'
   append_file 'app/javascript/packs/hello_world.js', <<~JS
     import TurbolinksAdapter from 'vue-turbolinks';
