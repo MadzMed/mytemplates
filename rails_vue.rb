@@ -32,6 +32,12 @@ run 'rm -rf app/assets/stylesheets'
 run 'rm -rf vendor'
 run 'curl -L https://github.com/lewagon/stylesheets/archive/master.zip > stylesheets.zip'
 run 'unzip stylesheets.zip -d app/assets && rm stylesheets.zip && mv app/assets/rails-stylesheets-master app/assets/stylesheets'
+touch 'app/assets/stylesheets/config/index.scss'
+inject_into_file 'app/assets/stylesheets/config/index.scss' do
+  @import "fonts";
+  @import "colors";
+  @import "bootstrap_variables";
+end
 
 # Dev environment
 ########################################
@@ -118,8 +124,6 @@ after_bundle do
   run 'rm app/views/pages/home.html.erb'
   run 'touch app/views/pages/home.html.erb'
   append_file 'app/views/pages/home.html.erb', <<~HTML
-    <%= javascript_pack_tag 'hello_vue.js' %>
-
     <div id="hello">
       {{message}}
       <App></App>
@@ -215,12 +219,9 @@ after_bundle do
   ########################################
   run 'yarn add popper.js jquery bootstrap vue-turbolinks'
   append_file 'app/javascript/packs/application.js', <<~JS
-
-
-    // ----------------------------------------------------
-    // Note(lewagon): ABOVE IS RAILS DEFAULT CONFIGURATION
-    // WRITE YOUR OWN JS STARTING FROM HERE 👇
-    // ----------------------------------------------------
+    import App from '../app.vue'
+    import TurbolinksAdapter from 'vue-turbolinks';
+    import Vue from 'vue/dist/vue.esm'
 
     // External imports
     import "bootstrap";
@@ -229,13 +230,95 @@ after_bundle do
     // import { initSelect2 } from '../components/init_select2';
 
     document.addEventListener('turbolinks:load', () => {
-      // Call your functions here, e.g:
-      // initSelect2();
+      const app = new Vue({
+        el: '',
+        data: () => {
+          return {
+            message: "Can you say hello?"
+          }
+        },
+        components: { App }
+      })
     });
   JS
 
+  run 'mkdir app/config/webpack/loaders'
+  run 'touch app/config/webpack/loaders/sass.js'
+  inject_into_file 'app/config/webpack/sass.js' do
+    const { config } = require('@rails/webpacker')
+
+    module.exports = {
+      test: /\.sass$/,
+      use: [
+        'vue-style-loader',
+        {
+          loader: 'css-loader',
+          options: {
+            sourceMap: true,
+            importLoaders: 2
+          }
+        },
+        {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: true,
+            implementation: require('sass'),
+            additionalData: `@import "app/assets/stylesheets/config/index.scss"`,
+            indentedSyntax: true
+          }
+        }
+      ]
+    }
+  end
+
+  run 'touch app/config/webpack/loaders/scss.js'
+  inject_into_file 'app/config/webpack/scss.js' do
+    const { config } = require('@rails/webpacker')
+
+    module.exports = {
+      test: /\.scss$/,
+      use: [
+        'vue-style-loader',
+        {
+          loader: 'css-loader',
+          options: {
+            sourceMap: true,
+            importLoaders: 2
+          }
+        },
+        {
+          loader: 'postcss-loader',
+          options: {
+            sourceMap: true
+          }
+        },
+        {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: true,
+            implementation: require('sass'),
+            additionalData: `@import "app/assets/stylesheets/config/index.scss";`
+          }
+        }
+      ]
+    }
+  end
+  
+  run 'touch app/config/webpack/loaders/vue.js'
+  inject_into_file 'app/config/webpack/vue.js' do
+    module.exports = {
+      test: /\.vue(\.erb)?$/,
+      use: [{
+        loader: 'vue-loader',
+      }],
+    }
+  end
+
   inject_into_file 'config/webpack/environment.js', before: 'module.exports' do
     <<~JS
+      const vue = require('./loaders/vue')
+      const sass = require('./loaders/sass')
+      const scss = require('./loaders/scss')
       const webpack = require('webpack');
       // Preventing Babel from transpiling NodeModules packages
       environment.loaders.delete('nodeModules');
@@ -247,6 +330,10 @@ after_bundle do
           Popper: ['popper.js', 'default']
         })
       );
+      environment.plugins.prepend('VueLoaderPlugin', new VueLoaderPlugin())
+      environment.loaders.prepend('vue', vue)
+      environment.loaders.append('sass', sass)
+      environment.loaders.append('scss', scss)
     JS
   end
 
@@ -284,11 +371,11 @@ after_bundle do
   ########################################
   run 'curl -L https://raw.githubusercontent.com/lewagon/rails-templates/master/.rubocop.yml > .rubocop.yml'
 
+  # Fix puma config
+  gsub_file('config/puma.rb', 'pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }', '# pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }')
+
   # Git
   ########################################
   git add: '.'
   git commit: "-m ':tada: init'"
-
-  # Fix puma config
-  gsub_file('config/puma.rb', 'pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }', '# pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }')
 end
