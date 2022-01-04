@@ -244,9 +244,9 @@ after_bundle do
     });
   JS
 
-  run 'mkdir app/config/webpack/loaders'
-  run 'touch app/config/webpack/loaders/sass.js'
-  inject_into_file 'app/config/webpack/sass.js' do
+  run 'mkdir config/webpack/loaders'
+  run 'touch config/webpack/loaders/sass.js'
+  inject_into_file 'config/webpack/sass.js' do
     <<~JS
       const { config } = require('@rails/webpacker')
 
@@ -275,8 +275,8 @@ after_bundle do
     JS
   end
 
-  run 'touch app/config/webpack/loaders/scss.js'
-  inject_into_file 'app/config/webpack/scss.js' do
+  run 'touch config/webpack/loaders/scss.js'
+  inject_into_file 'config/webpack/scss.js' do
     <<~JS
       const { config } = require('@rails/webpacker')
 
@@ -310,8 +310,8 @@ after_bundle do
     JS
   end
   
-  run 'touch app/config/webpack/loaders/vue.js'
-  inject_into_file 'app/config/webpack/vue.js' do
+  run 'touch config/webpack/loaders/vue.js'
+  inject_into_file 'config/webpack/vue.js' do
     <<~JS
       module.exports = {
         test: /\.vue(\.erb)?$/,
@@ -344,27 +344,6 @@ after_bundle do
       environment.loaders.append('scss', scss)
     JS
   end
-
-  run 'touch app/javascript/packs/hello_world.js'
-  append_file 'app/javascript/packs/hello_world.js', <<~JS
-    import TurbolinksAdapter from 'vue-turbolinks';
-    import Vue from 'vue/dist/vue.esm'
-    import App from '../app.vue'
-
-    Vue.use(TurbolinksAdapter);
-
-    document.addEventListener('turbolinks:load', () => {
-      const app = new Vue({
-        el: '#hello',
-        data: () => {
-          return {
-            message: "Can you say hello?"
-          }
-        },
-        components: { App }
-      })
-    });
-  JS
 
   # Dotenv
   ########################################
