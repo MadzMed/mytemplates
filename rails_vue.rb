@@ -41,8 +41,8 @@ gsub_file('config/environments/development.rb', /config\.assets\.debug.*/, 'conf
 ########################################
 if Rails.version < "6"
   scripts = <<~HTML
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
   HTML
   gsub_file('app/views/layouts/application.html.erb', "<%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>", scripts)
 end
@@ -80,7 +80,6 @@ run 'curl -L https://github.com/lewagon/awesome-navbars/raw/master/templates/_na
 
 inject_into_file 'app/views/layouts/application.html.erb', after: '<body>' do
   <<-HTML
-
     <%= render 'shared/navbar' %>
     <%= render 'shared/flashes' %>
   HTML
@@ -89,7 +88,7 @@ end
 # README
 ########################################
 markdown_file_content = <<-MARKDOWN
-
+  Welcome to the rails vue template
 MARKDOWN
 file 'README.md', markdown_file_content, force: true
 
