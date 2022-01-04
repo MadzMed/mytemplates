@@ -34,9 +34,11 @@ run 'curl -L https://github.com/lewagon/stylesheets/archive/master.zip > stylesh
 run 'unzip stylesheets.zip -d app/assets && rm stylesheets.zip && mv app/assets/rails-stylesheets-master app/assets/stylesheets'
 touch 'app/assets/stylesheets/config/index.scss'
 inject_into_file 'app/assets/stylesheets/config/index.scss' do
-  @import "fonts";
-  @import "colors";
-  @import "bootstrap_variables";
+  <<~JS
+    @import "fonts";
+    @import "colors";
+    @import "bootstrap_variables";
+  JS
 end
 
 # Dev environment
@@ -245,73 +247,79 @@ after_bundle do
   run 'mkdir app/config/webpack/loaders'
   run 'touch app/config/webpack/loaders/sass.js'
   inject_into_file 'app/config/webpack/sass.js' do
-    const { config } = require('@rails/webpacker')
+    <<~JS
+      const { config } = require('@rails/webpacker')
 
-    module.exports = {
-      test: /\.sass$/,
-      use: [
-        'vue-style-loader',
-        {
-          loader: 'css-loader',
-          options: {
-            sourceMap: true,
-            importLoaders: 2
+      module.exports = {
+        test: /\.sass$/,
+        use: [
+          'vue-style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              importLoaders: 2
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+              implementation: require('sass'),
+              additionalData: `@import "app/assets/stylesheets/config/index.scss"`,
+              indentedSyntax: true
+            }
           }
-        },
-        {
-          loader: 'sass-loader',
-          options: {
-            sourceMap: true,
-            implementation: require('sass'),
-            additionalData: `@import "app/assets/stylesheets/config/index.scss"`,
-            indentedSyntax: true
-          }
-        }
-      ]
-    }
+        ]
+      }
+    JS
   end
 
   run 'touch app/config/webpack/loaders/scss.js'
   inject_into_file 'app/config/webpack/scss.js' do
-    const { config } = require('@rails/webpacker')
+    <<~JS
+      const { config } = require('@rails/webpacker')
 
-    module.exports = {
-      test: /\.scss$/,
-      use: [
-        'vue-style-loader',
-        {
-          loader: 'css-loader',
-          options: {
-            sourceMap: true,
-            importLoaders: 2
+      module.exports = {
+        test: /\.scss$/,
+        use: [
+          'vue-style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              importLoaders: 2
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+              implementation: require('sass'),
+              additionalData: `@import "app/assets/stylesheets/config/index.scss";`
+            }
           }
-        },
-        {
-          loader: 'postcss-loader',
-          options: {
-            sourceMap: true
-          }
-        },
-        {
-          loader: 'sass-loader',
-          options: {
-            sourceMap: true,
-            implementation: require('sass'),
-            additionalData: `@import "app/assets/stylesheets/config/index.scss";`
-          }
-        }
-      ]
-    }
+        ]
+      }
+    JS
   end
   
   run 'touch app/config/webpack/loaders/vue.js'
   inject_into_file 'app/config/webpack/vue.js' do
-    module.exports = {
-      test: /\.vue(\.erb)?$/,
-      use: [{
-        loader: 'vue-loader',
-      }],
-    }
+    <<~JS
+      module.exports = {
+        test: /\.vue(\.erb)?$/,
+        use: [{
+          loader: 'vue-loader',
+        }],
+      }
+    JS
   end
 
   inject_into_file 'config/webpack/environment.js', before: 'module.exports' do
