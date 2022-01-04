@@ -35,9 +35,9 @@ run 'unzip stylesheets.zip -d app/assets && rm stylesheets.zip && mv app/assets/
 touch 'app/assets/stylesheets/config/index.scss'
 inject_into_file 'app/assets/stylesheets/config/index.scss' do
   <<~SCSS
-    @import "fonts";
-    @import "colors";
-    @import "bootstrap_variables";
+    @import 'fonts';
+    @import 'colors';
+    @import 'bootstrap_variables';
   SCSS
 end
 
