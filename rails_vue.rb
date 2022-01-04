@@ -246,7 +246,7 @@ after_bundle do
 
   run 'mkdir config/webpack/loaders'
   run 'touch config/webpack/loaders/sass.js'
-  inject_into_file 'config/webpack/sass.js' do
+  inject_into_file 'config/webpack/loaders/sass.js' do
     <<~JS
       const { config } = require('@rails/webpacker')
 
@@ -276,7 +276,7 @@ after_bundle do
   end
 
   run 'touch config/webpack/loaders/scss.js'
-  inject_into_file 'config/webpack/scss.js' do
+  inject_into_file 'config/webpack/loaders/scss.js' do
     <<~JS
       const { config } = require('@rails/webpacker')
 
@@ -311,7 +311,7 @@ after_bundle do
   end
   
   run 'touch config/webpack/loaders/vue.js'
-  inject_into_file 'config/webpack/vue.js' do
+  inject_into_file 'config/webpack/loaders/vue.js' do
     <<~JS
       module.exports = {
         test: /\.vue(\.erb)?$/,
