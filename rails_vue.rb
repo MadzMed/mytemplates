@@ -34,11 +34,11 @@ run 'curl -L https://github.com/lewagon/stylesheets/archive/master.zip > stylesh
 run 'unzip stylesheets.zip -d app/assets && rm stylesheets.zip && mv app/assets/rails-stylesheets-master app/assets/stylesheets'
 touch 'app/assets/stylesheets/config/index.scss'
 inject_into_file 'app/assets/stylesheets/config/index.scss' do
-  <<~JS
+  <<~SCSS
     @import "fonts";
     @import "colors";
     @import "bootstrap_variables";
-  JS
+  SCSS
 end
 
 # Dev environment
