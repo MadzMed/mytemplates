@@ -27,7 +27,7 @@ inject_into_file 'Gemfile', before: 'group :development, :test do' do
 end
 color "Gem devise, rack cors, and foreman", WHITE, BACKGROUND_BLACK
 
-inject_into_file 'Gemfile', before: "# Call 'byebug' anywhere in the code to stop execution and get a debugger console" do
+inject_into_file 'Gemfile', after: "group :development, :test do" do
   <<~RUBY
     gem 'rspec'
     gem 'rspec-rails', '~> 5.0.0'
