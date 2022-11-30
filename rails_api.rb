@@ -25,6 +25,7 @@ inject_into_file 'Gemfile', before: 'group :development, :test do' do
     gem 'font-awesome-sass'
   RUBY
 end
+color "Gem devise, rack cors, and foreman", WHITE, BACKGROUND_BLACK
 
 inject_into_file 'Gemfile', before: "# Call 'byebug' anywhere in the code to stop execution and get a debugger console" do
   <<~RUBY
@@ -37,6 +38,7 @@ inject_into_file 'Gemfile', before: "# Call 'byebug' anywhere in the code to sto
     gem 'dotenv-rails'
   RUBY
 end
+color "Gem rspec, shoulda-matchers, factory_bot_rails, pry-byebug, pry-rails, dotenv-rails", WHITE, BACKGROUND_BLACK
 color "Gemfile updated", GREEN, BACKGROUND_BLACK
 
 # README
@@ -60,9 +62,8 @@ generators = <<~RUBY
     generate.factory_bot suffix: "factory"
   end
 RUBY
-color "Updating application.rb", GREEN, BACKGROUND_BLACK
-
 environment generators
+color "Updating application.rb", GREEN, BACKGROUND_BLACK
 
 # AFTER BUNDLE
 ########################################
