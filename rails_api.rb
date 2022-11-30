@@ -1,4 +1,4 @@
-run 'pgrep spring | xargs kill -9'
+run "if uname | grep -q 'Darwin'; then pgrep spring | xargs kill -9; fi"
 
 RED = "1;31"
 GREEN = "1;32"
