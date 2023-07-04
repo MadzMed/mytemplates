@@ -215,14 +215,8 @@ after_bundle do
   insert_into_file("db/migrate/#{migration_file}", before: '      ## Database authenticatable') do
     <<~RUBY
     ## Custom data for devise
-    \s\s\s\s\s\st.string :first_name
-    \s\s\s\s\s\st.string :last_name
     \s\s\s\s\s\st.string :username
     \s\s\s\s\s\st.string :phone_number
-    \s\s\s\s\s\st.string :address
-    \s\s\s\s\s\st.string :city
-    \s\s\s\s\s\st.string :country
-    \s\s\s\s\s\st.string :zip_code
 
     RUBY
   end
